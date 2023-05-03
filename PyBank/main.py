@@ -8,20 +8,18 @@ import csv
 budget_csv = os.path.join('Resources', 'budget_data.csv')
 
 # List the data
-dates=[]
 monthly_changes_PL=[]
 
-
-# Set the initial value to zero
+#Set the initial value
 months_count = 0
 current_month_PL = 0
 last_month_PL = 0
 Total_PL = 0
-average_monthly_changes_PL = 0
-greatest_increase_PL = 0
-greatest_decrease_PL = 0
-highest_month = 0 
-lowest_month = 0
+monthly_change_PL = 0
+highest_month=""
+lowest_month=""
+greatest_increase_PL=0
+greatest_decrease_PL=0
 
 # Read in the CSV file
 with open(budget_csv, encoding= 'UTF-8' ) as csvfile:
@@ -51,34 +49,27 @@ with open(budget_csv, encoding= 'UTF-8' ) as csvfile:
             #Add montly changes
             monthly_changes_PL.append(monthly_change_PL)
         
-            #Add dates
-            dates.append(row[0])
-        
             #Determine the last month p&l for the next loop 
             last_month_PL = current_month_PL
             
             # Calculate the average monthly change p&l over the entire period
             total_monthly_changes_PL = sum(monthly_changes_PL)
             average_monthly_changes_PL = round (total_monthly_changes_PL/(months_count-1),2)
-        
-            #Find the greatest increase and greatest decrease in p&l over the entire period
-            greatest_increase_PL= max(monthly_changes_PL)
-            greatest_decrease_PL= min(monthly_changes_PL)
-        
-            #Locate the index value of the greatest increase in p&l and greatest decrease in p&l over the entire period
-            highest_month_index = monthly_changes_PL.index (greatest_increase_PL)
-            lowest_month_index = monthly_changes_PL.index (greatest_decrease_PL)
-        
-            #Find the greatest increase month and greatest decrease month
-            highest_month = dates[highest_month_index]
-            lowest_month = dates[lowest_month_index]
-        
-        #Print out the final results to the terminal
-        print(f"Total Months: {months_count}")
-        print(f"Total: ${Total_PL}")
-        print(f"Average Change: ${average_monthly_changes_PL}")
-        print(f"Greatest Increaes in Profits: {highest_month} (${greatest_increase_PL})")
-        print(f"Greatest Decrease in Profits: {lowest_month} (${greatest_decrease_PL})")
+            
+            # Calculate the greatest increase/decrease in p&l and determine the highest/lowest month over the entire period
+            if monthly_change_PL > greatest_increase_PL:
+                greatest_increase_PL = monthly_change_PL
+                highest_month = row[0]
+            elif monthly_change_PL < greatest_decrease_PL:
+                    greatest_decrease_PL = monthly_change_PL 
+                    lowest_month = row[0]
+
+# Print out the final analysis results to the terminal
+print(f"Total Months: {months_count}")
+print(f"Total: ${Total_PL}")
+print(f"Average Change: ${average_monthly_changes_PL}")
+print(f"Greatest Increaes in Profits: {highest_month} (${greatest_increase_PL})")
+print(f"Greatest Decrease in Profits: {lowest_month} (${greatest_decrease_PL})")
 
 # Set variable for output analysis file
 pybank_file = os.path.join('Analysis',"pybank_analysis.txt")
